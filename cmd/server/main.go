@@ -1,26 +1,17 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 
-	maelstorm "github.com/jepsen-io/maelstrom/demo/go"
+	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
+	"github.com/louisandrew/gossip-glomers/internal/handler"
 	"github.com/louisandrew/gossip-glomers/internal/messages"
 )
 
 func main() {
-	n := maelstorm.NewNode()
+	n := maelstrom.NewNode()
 
-	n.Handle(messages.Echo, func(msg maelstorm.Message) error {
-		var body map[string]any
-		if err := json.Unmarshal(msg.Body, &body); err != nil {
-			return err
-		}
-
-		// @TODO: add logger
-		body["type"] = "echo_ok"
-		return n.Reply(msg, body)
-	})
+	n.Handle(messages.Echo, handler.EchoHandler(n))
 
 	if err := n.Run(); err != nil {
 		log.Fatal(err)
