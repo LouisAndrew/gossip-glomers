@@ -1,26 +1,20 @@
 package handler
 
 import (
-	"encoding/json"
-
 	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
+	"github.com/louisandrew/gossip-glomers/internal/messages"
 )
 
-type echoHandler struct {
-	node *maelstrom.Node
-}
-
-func (h echoHandler) handle(msg maelstrom.Message) error {
-	var body map[string]any
-	if err := json.Unmarshal(msg.Body, &body); err != nil {
-		return err
+func handleEcho(msg maelstrom.Message) (maelstromResponse, error) {
+	body, err := getMessageBody(msg, messages.Echo)
+	if err != nil {
+		return nil, err
 	}
 
 	body["type"] = "echo_ok"
-	return h.node.Reply(msg, body)
+	return body, nil
 }
 
 func EchoHandler(node *maelstrom.Node) maelstrom.HandlerFunc {
-	h := echoHandler{node}
-	return h.handle
+	return buildHandler(node, handleEcho)
 }

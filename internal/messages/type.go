@@ -1,5 +1,6 @@
 package messages
 
 const (
-	Echo = "echo"
+	Echo     = "echo"
+	Generate = "generate"
 )

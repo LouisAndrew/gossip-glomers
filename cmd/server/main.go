@@ -12,6 +12,7 @@ func main() {
 	n := maelstrom.NewNode()
 
 	n.Handle(messages.Echo, handler.EchoHandler(n))
+	n.Handle(messages.Generate, handler.UniqueIdHandler(n))
 
 	if err := n.Run(); err != nil {
 		log.Fatal(err)
